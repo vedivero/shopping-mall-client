@@ -33,7 +33,7 @@ export const logout = createAsyncThunk('user/logout', async (_, { dispatch }) =>
    dispatch(initialCart());
    dispatch(
       showToastMessage({
-         message: '로그아웃을 완료했습니다!',
+         message: '로그아웃 되었습니다',
          status: 'info',
       }),
    );
