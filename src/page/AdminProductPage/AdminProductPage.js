@@ -12,7 +12,7 @@ const AdminProductPage = () => {
    const navigate = useNavigate();
    const [query] = useSearchParams();
    const dispatch = useDispatch();
-   const { productList, totalPageNum } = useSelector((state) => state.product);
+   const productList = useSelector((state) => state.product.productList) || [];
    const [showDialog, setShowDialog] = useState(false);
    const [searchQuery, setSearchQuery] = useState({
       page: query.get('page') || 1,
@@ -20,10 +20,13 @@ const AdminProductPage = () => {
    }); //검색 조건들을 저장하는 객체
 
    const [mode, setMode] = useState('new');
-
+   const totalPageNum = useSelector((state) => state.product.totalPageNum);
    const tableHeader = ['#', 'Sku', 'Name', 'Price', 'Stock', 'Image', 'Status', ''];
 
    //상품리스트 가져오기 (url쿼리 맞춰서)
+   useEffect(() => {
+      dispatch(getProductList());
+   }, []);
 
    useEffect(() => {
       //검색어나 페이지가 바뀌면 url바꿔주기 (검색어또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)
@@ -62,7 +65,12 @@ const AdminProductPage = () => {
                Add New Item +
             </Button>
 
-            <ProductTable header={tableHeader} data='' deleteItem={deleteItem} openEditForm={openEditForm} />
+            <ProductTable
+               header={tableHeader}
+               data={productList}
+               deleteItem={deleteItem}
+               openEditForm={openEditForm}
+            />
             <ReactPaginate
                nextLabel='next >'
                onPageChange={handlePageClick}
