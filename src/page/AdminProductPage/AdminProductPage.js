@@ -17,19 +17,23 @@ const AdminProductPage = () => {
    const [searchQuery, setSearchQuery] = useState({
       page: query.get('page') || 1,
       name: query.get('name') || '',
-   }); //검색 조건들을 저장하는 객체
+   });
 
    const [mode, setMode] = useState('new');
    const totalPageNum = useSelector((state) => state.product.totalPageNum);
    const tableHeader = ['#', 'Sku', 'Name', 'Price', 'Stock', 'Image', 'Status', ''];
 
-   //상품리스트 가져오기 (url쿼리 맞춰서)
    useEffect(() => {
-      dispatch(getProductList());
-   }, []);
+      dispatch(getProductList({ ...searchQuery }));
+   }, [query]);
 
    useEffect(() => {
-      //검색어나 페이지가 바뀌면 url바꿔주기 (검색어또는 페이지가 바뀜 => url 바꿔줌=> url쿼리 읽어옴=> 이 쿼리값 맞춰서  상품리스트 가져오기)
+      if (searchQuery.name === '') {
+         delete searchQuery.name;
+      }
+      const params = new URLSearchParams(searchQuery);
+      const query = params.toString();
+      navigate('?' + query);
    }, [searchQuery]);
 
    const deleteItem = (id) => {
