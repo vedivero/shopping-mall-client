@@ -6,7 +6,15 @@ import { initialCart } from '../cart/cartSlice';
 
 export const loginWithEmail = createAsyncThunk(
    'user/loginWithEmail',
-   async ({ email, password }, { rejectWithValue }) => {},
+   async ({ email, password }, { rejectWithValue }) => {
+      try {
+         const response = await api.post('/auth/login', { email, password });
+         sessionStorage.setItem('token', response.data.token);
+         return response.data;
+      } catch (error) {
+         return rejectWithValue(error.error);
+      }
+   },
 );
 
 export const loginWithGoogle = createAsyncThunk(
@@ -24,13 +32,20 @@ export const registerUser = createAsyncThunk(
          navigate('/login');
          return response.data.data;
       } catch (error) {
-         dispatch(showToastMessage({ message: '회원 가입 중 오류가 발생했습니다..', status: 'error' }));
+         dispatch(showToastMessage({ message: '회원 가입 중 오류가 발생했습니다.', status: 'error' }));
          return rejectWithValue(error.error);
       }
    },
 );
 
-export const loginWithToken = createAsyncThunk('user/loginWithToken', async (_, { rejectWithValue }) => {});
+export const loginWithToken = createAsyncThunk('user/loginWithToken', async (_, { rejectWithValue }) => {
+   try {
+      const response = await api.get('/user/me');
+      return response.data;
+   } catch (error) {
+      return rejectWithValue(error.error);
+   }
+});
 
 const userSlice = createSlice({
    name: 'user',
@@ -58,6 +73,21 @@ const userSlice = createSlice({
          })
          .addCase(registerUser.rejected, (state, action) => {
             state.registrationError = action.payload;
+         })
+         .addCase(loginWithEmail.pending, (state) => {
+            state.loading = true;
+         })
+         .addCase(loginWithEmail.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload.user;
+            state.loginError = null;
+         })
+         .addCase(loginWithEmail.rejected, (state, action) => {
+            state.loading = false;
+            state.loginError = action.payload;
+         })
+         .addCase(loginWithToken.fulfilled, (state, action) => {
+            state.user = action.payload.user;
          });
    },
 });
