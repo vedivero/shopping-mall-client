@@ -28,6 +28,12 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
    }, [success]);
 
    useEffect(() => {
+      if (error) {
+         console.error('상품 업데이트 오류:', error);
+      }
+   }, [error]);
+
+   useEffect(() => {
       if (error || !success) {
          dispatch(clearError());
       }
@@ -55,16 +61,15 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
    };
 
    const handleSubmit = (event) => {
-      console.log('formData : ', formData);
       event.preventDefault();
       if (stock.length === 0) return setStockError(true);
       const totalStock = stock.reduce((total, item) => {
          return { ...total, [item[0]]: parseInt(item[1]) };
       }, {});
       if (mode === 'new') {
-         dispatch(createProduct({ ...formData, totalStock }));
+         dispatch(createProduct({ ...formData, stock: totalStock }));
       } else {
-         // 상품 수정하기
+         dispatch(editProduct({ ...formData, stock: totalStock, id: selectedProduct._id }));
       }
    };
 

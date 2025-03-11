@@ -44,7 +44,18 @@ export const deleteProduct = createAsyncThunk(
 
 export const editProduct = createAsyncThunk(
    'products/editProduct',
-   async ({ id, ...formData }, { dispatch, rejectWithValue }) => {},
+   async ({ id, ...formData }, { dispatch, rejectWithValue }) => {
+      try {
+         const response = await api.put(`/product/${id}`, formData);
+         if (response.status !== 200) throw new Error(response.error);
+         dispatch(getProductList({ page: 1 }));
+         dispatch(showToastMessage({ message: '상품 수정이 완료되었습니다.', status: 'success' }));
+         return response.data.data;
+      } catch (error) {
+         dispatch(showToastMessage({ message: '상품 수정이 실패했습니다.', status: 'error' }));
+         return rejectWithValue(error.error);
+      }
+   },
 );
 
 // 슬라이스 생성
@@ -76,9 +87,12 @@ const productSlice = createSlice({
             state.loading = true;
          })
          .addCase(createProduct.fulfilled, (state) => {
-            state.loading = false;
             state.error = '';
             state.success = true;
+            state.loading = false;
+            setTimeout(() => {
+               state.success = true;
+            }, 1000);
          })
          .addCase(createProduct.rejected, (state, action) => {
             state.loading = false;
@@ -94,9 +108,21 @@ const productSlice = createSlice({
             state.error = '';
             state.totalPageNum = action.payload.totalPageNum;
          })
-         .addCase(getProductList.rejected, (state, action) => {
+         .addCase(editProduct.pending, (state, action) => {
+            state.loading = true;
+         })
+         .addCase(editProduct.fulfilled, (state) => {
+            state.error = '';
+            state.success = true;
+            state.loading = false;
+            setTimeout(() => {
+               state.success = false;
+            }, 1000);
+         })
+         .addCase(editProduct.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
+            state.success = false;
          });
    },
 });
