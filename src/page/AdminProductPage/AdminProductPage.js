@@ -13,6 +13,7 @@ const AdminProductPage = () => {
    const [query] = useSearchParams();
    const dispatch = useDispatch();
    const productList = useSelector((state) => state.product.productList) || [];
+   const success = useSelector((state) => state.product.success);
    const [showDialog, setShowDialog] = useState(false);
    const [searchQuery, setSearchQuery] = useState({
       page: query.get('page') || 1,
@@ -36,13 +37,20 @@ const AdminProductPage = () => {
       navigate('?' + query);
    }, [searchQuery]);
 
+   useEffect(() => {
+      if (success) {
+         setShowDialog(false);
+      }
+   }, [success]);
+
    const deleteItem = (id) => {
       //아이템 삭제하가ㅣ
    };
 
    const openEditForm = (product) => {
-      //edit모드로 설정하고
-      // 아이템 수정다이얼로그 열어주기
+      setMode('edit');
+      dispatch(setSelectedProduct(product));
+      setShowDialog(true);
    };
 
    const handleClickNewItem = () => {
