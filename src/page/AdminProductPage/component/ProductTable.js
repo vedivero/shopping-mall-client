@@ -35,11 +35,11 @@ const ProductTable = ({ header, data, deleteItem, openEditForm }) => {
                         </td>
                         <td>{item.status}</td>
                         <td>
-                           <Button size='sm' variant='danger' onClick={() => deleteItem(item._id)}>
-                              -
-                           </Button>
                            <Button size='sm' onClick={() => openEditForm(item)}>
-                              Edit
+                              수정
+                           </Button>
+                           <Button size='sm' variant='danger' onClick={() => deleteItem(item._id)}>
+                              삭제
                            </Button>
                         </td>
                      </tr>
