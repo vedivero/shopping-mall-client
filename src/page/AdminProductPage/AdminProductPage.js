@@ -22,7 +22,16 @@ const AdminProductPage = () => {
 
    const [mode, setMode] = useState('new');
    const totalPageNum = useSelector((state) => state.product.totalPageNum);
-   const tableHeader = ['#', 'Sku', 'Name', 'Price', 'Stock', 'Image', 'Status', ''];
+   const tableHeader = [
+      '#',
+      '상품 관리번호',
+      '상품명',
+      '상품가격',
+      '재고 수량',
+      '상품 이미지',
+      '상품 상태(게시, 숨김)',
+      '상품 관리',
+   ];
 
    useEffect(() => {
       dispatch(getProductList({ ...searchQuery }));
@@ -44,7 +53,7 @@ const AdminProductPage = () => {
    }, [success]);
 
    const deleteItem = (id) => {
-      //아이템 삭제하가ㅣ
+      dispatch(deleteProduct(id));
    };
 
    const openEditForm = (product) => {
@@ -74,7 +83,7 @@ const AdminProductPage = () => {
                />
             </div>
             <Button className='mt-2 mb-2' onClick={handleClickNewItem}>
-               Add New Item +
+               새 상품 등록 +
             </Button>
 
             <ProductTable
