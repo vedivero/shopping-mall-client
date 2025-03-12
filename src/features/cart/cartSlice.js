@@ -28,20 +28,57 @@ export const addToCart = createAsyncThunk(
    },
 );
 
-export const getCartList = createAsyncThunk(
-   'cart/getCartList',
-   async (_, { rejectWithValue, dispatch }) => {},
-);
+export const getCartList = createAsyncThunk('cart/getCartList', async (_, { rejectWithValue, dispatch }) => {
+   try {
+      const response = await api.get('/cart');
+      if (response.status !== 200) throw new Error(response.error);
+      console.log(response.data.data);
+      return response.data.data;
+   } catch (error) {
+      console.error(error);
+      dispatch(showToastMessage({ message: '장바구니 조회 중 오류가 발생했습니다.', status: 'error' }));
+      return rejectWithValue(error.error);
+   }
+});
 
 export const deleteCartItem = createAsyncThunk(
    'cart/deleteCartItem',
-   async (id, { rejectWithValue, dispatch }) => {},
+   async (id, { rejectWithValue, dispatch }) => {
+      try {
+         const response = await api.delete(`/cart/${id}`);
+         if (response.status !== 200) throw new Error(response.error);
+         dispatch(getCartList());
+         dispatch(showToastMessage({ message: '장바구니에서 해당 상품을 삭제했습니다.', status: 'success' }));
+         return response.data.cartItemQty;
+      } catch (error) {
+         dispatch(showToastMessage({ message: error, status: 'error' }));
+
+         return rejectWithValue(error);
+      }
+   },
 );
 
-export const updateQty = createAsyncThunk('cart/updateQty', async ({ id, value }, { rejectWithValue }) => {});
+export const updateQty = createAsyncThunk('cart/updateQty', async ({ id, value }, { rejectWithValue }) => {
+   try {
+      const response = await api.put(`/cart/${id}`, { qty: value });
+      if (response.status !== 200) throw new Error(response.error);
+      return response.data.data;
+   } catch (error) {
+      return rejectWithValue(error);
+   }
+});
 
-export const getCartQty = createAsyncThunk('cart/getCartQty', async (_, { rejectWithValue, dispatch }) => {});
+export const getCartQty = createAsyncThunk('cart/getCartQty', async (_, { rejectWithValue, dispatch }) => {
+   try {
+      const response = await api.get('/cart/qty');
+      if (response.status !== 200) throw new Error(response.error);
+      return response.data.qty;
+   } catch (error) {
+      dispatch(showToastMessage({ message: error, status: 'error' }));
 
+      return rejectWithValue(error);
+   }
+});
 const cartSlice = createSlice({
    name: 'cart',
    initialState,
@@ -63,6 +100,37 @@ const cartSlice = createSlice({
          .addCase(addToCart.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
+         })
+         .addCase(getCartList.pending, (state, action) => {
+            state.loading = true;
+         })
+         .addCase(getCartList.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = '';
+            state.cartList = action.payload.items;
+            state.cartItemCount = action.payload.items.length;
+            state.totalPrice = action.payload.items.reduce(
+               (total, item) => total + item.productId.price * item.qty,
+               0,
+            );
+         })
+         .addCase(getCartList.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+         })
+         .addCase(updateQty.fulfilled, (state, action) => {
+            state.loading = false;
+            state.cartList = action.payload;
+            state.totalPrice = action.payload.reduce(
+               (total, item) => total + item.productId.price * item.qty,
+               0,
+            );
+         })
+         .addCase(deleteCartItem.fulfilled, (state, action) => {
+            state.cartItemCount = action.payload;
+         })
+         .addCase(getCartQty.fulfilled, (state, action) => {
+            state.cartItemCount = action.payload;
          });
    },
 });
