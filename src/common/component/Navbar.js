@@ -15,8 +15,10 @@ const Navbar = ({ user }) => {
    const [showSearchBox, setShowSearchBox] = useState(false);
 
    useEffect(() => {
-      dispatch(getCartList());
-   }, []);
+      if (user) {
+         dispatch(getCartList());
+      }
+   }, [user]);
 
    const menuList = [
       '전체',
