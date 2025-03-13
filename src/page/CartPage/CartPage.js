@@ -10,10 +10,13 @@ import { getCartList } from '../../features/cart/cartSlice';
 const CartPage = () => {
    const dispatch = useDispatch();
    const { cartList, totalPrice } = useSelector((state) => state.cart);
+   const { user } = useSelector((state) => state.user);
 
    useEffect(() => {
-      dispatch(getCartList());
-   }, []);
+      if (user) {
+         dispatch(getCartList());
+      }
+   }, [user]);
 
    return (
       <Container>
