@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Modal, Button, Row, Col, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import CloudinaryUploadWidget from '../../../utils/CloudinaryUploadWidget';
-import { CATEGORY, STATUS, SIZE } from '../../../constants/product.constants';
+import { CATEGORY, STATUS, SIZE, CATEGORY_MAP } from '../../../constants/product.constants';
 import '../style/adminProduct.style.css';
 import { clearError, createProduct, editProduct } from '../../../features/product/productSlice';
 
@@ -23,6 +23,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
    const [stock, setStock] = useState([]);
    const dispatch = useDispatch();
    const [stockError, setStockError] = useState(false);
+
    useEffect(() => {
       if (success) setShowDialog(false);
    }, [success]);
@@ -63,13 +64,24 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
    const handleSubmit = (event) => {
       event.preventDefault();
       if (stock.length === 0) return setStockError(true);
+
       const totalStock = stock.reduce((total, item) => {
          return { ...total, [item[0]]: parseInt(item[1]) };
       }, {});
+
+      const categoryEnglish = formData.category.map((cat) => CATEGORY_MAP[cat] || cat);
+
       if (mode === 'new') {
-         dispatch(createProduct({ ...formData, stock: totalStock }));
+         dispatch(createProduct({ ...formData, category: categoryEnglish, stock: totalStock }));
       } else {
-         dispatch(editProduct({ ...formData, stock: totalStock, id: selectedProduct._id }));
+         dispatch(
+            editProduct({
+               ...formData,
+               category: categoryEnglish,
+               stock: totalStock,
+               id: selectedProduct._id,
+            }),
+         );
       }
    };
 
@@ -252,9 +264,9 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
                      value={formData.category}
                      required
                   >
-                     {CATEGORY.map((item, idx) => (
-                        <option key={idx} value={item.toLowerCase()}>
-                           {item}
+                     {Object.keys(CATEGORY_MAP).map((kor, idx) => (
+                        <option key={idx} value={CATEGORY_MAP[kor]}>
+                           {kor}
                         </option>
                      ))}
                   </Form.Control>

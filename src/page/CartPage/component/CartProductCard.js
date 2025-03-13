@@ -13,7 +13,8 @@ const CartProductCard = ({ item }) => {
    };
 
    const deleteCart = (id) => {
-      dispatch(deleteCartItem(id));
+      let check = window.confirm('해당 상품을 삭제하시겠습니까?');
+      if (check) dispatch(deleteCartItem(id));
    };
 
    return (

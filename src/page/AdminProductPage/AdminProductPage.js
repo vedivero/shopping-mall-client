@@ -53,7 +53,8 @@ const AdminProductPage = () => {
    }, [success]);
 
    const deleteItem = (id) => {
-      dispatch(deleteProduct(id));
+      let check = window.confirm('상품을 삭제하시겠습니까?');
+      if (check) dispatch(deleteProduct(id));
    };
 
    const openEditForm = (product) => {
@@ -85,13 +86,13 @@ const AdminProductPage = () => {
             <Button className='mt-2 mb-2' onClick={handleClickNewItem}>
                새 상품 등록 +
             </Button>
-
             <ProductTable
                header={tableHeader}
                data={productList}
                deleteItem={deleteItem}
                openEditForm={openEditForm}
             />
+            \\
             <ReactPaginate
                nextLabel='next >'
                onPageChange={handlePageClick}

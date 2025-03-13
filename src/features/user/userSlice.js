@@ -8,7 +8,7 @@ export const loginWithEmail = createAsyncThunk(
    async ({ email, password }, { rejectWithValue, dispatch }) => {
       try {
          const response = await api.post('/auth/login', { email, password });
-         sessionStorage.setItem('token', response.data.sessionToken);
+         sessionStorage.setItem('token', response.data.token);
          return response.data;
       } catch (error) {
          console.error('이메일 로그인 실패 : ', error.message);
@@ -28,7 +28,7 @@ export const loginWithGoogle = createAsyncThunk(
    async (token, { rejectWithValue }) => {
       try {
          const response = await api.post('/auth/google', { token });
-         sessionStorage.setItem('token', response.data.sessionToken);
+         sessionStorage.setItem('token', response.data.token);
          return response.data;
       } catch (error) {
          console.error('구글 로그인 실패 : ', error.message);

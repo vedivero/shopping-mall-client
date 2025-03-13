@@ -15,6 +15,19 @@ export const getProductList = createAsyncThunk(
    },
 );
 
+export const getProductListByCategory = createAsyncThunk(
+   'products/getProductsByCategory',
+   async (category, { rejectWithValue }) => {
+      try {
+         const response = await api.get('/product/category', { params: { category } });
+         return response.data;
+      } catch (error) {
+         console.error(error.message);
+         return rejectWithValue(error.error);
+      }
+   },
+);
+
 export const getProductDetail = createAsyncThunk(
    'products/getProductDetail',
    async (id, { dispatch, rejectWithValue }) => {
@@ -108,14 +121,22 @@ const productSlice = createSlice({
             state.error = '';
             state.success = true;
             state.loading = false;
-            setTimeout(() => {
-               state.success = true;
-            }, 1000);
          })
          .addCase(createProduct.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
             state.success = false;
+         })
+         .addCase(deleteProduct.pending, (state) => {
+            state.loading = true;
+         })
+         .addCase(deleteProduct.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = '';
+         })
+         .addCase(deleteProduct.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
          })
          .addCase(getProductList.pending, (state) => {
             state.loading = true;
@@ -133,9 +154,6 @@ const productSlice = createSlice({
             state.error = '';
             state.success = true;
             state.loading = false;
-            setTimeout(() => {
-               state.success = false;
-            }, 1000);
          })
          .addCase(editProduct.rejected, (state, action) => {
             state.loading = false;
