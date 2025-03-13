@@ -76,5 +76,5 @@
 * Express
 * MongoDB
 ### Devops
-* AWS beanstalk 
+* Glitch
 * Netlify 
