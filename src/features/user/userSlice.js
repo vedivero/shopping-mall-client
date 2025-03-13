@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
 import { showToastMessage } from '../common/uiSlice';
 import api from '../../utils/api';
 import { initialCart } from '../cart/cartSlice';
@@ -25,7 +24,16 @@ export const loginWithEmail = createAsyncThunk(
 
 export const loginWithGoogle = createAsyncThunk(
    'user/loginWithGoogle',
-   async (token, { rejectWithValue }) => {},
+   async (token, { rejectWithValue }) => {
+      try {
+         const response = await api.post('/auth/google', { token });
+         sessionStorage.setItem('token', response.data.sessionToken);
+         return response.data;
+      } catch (error) {
+         console.error('구글 로그인 실패', error.message);
+         return rejectWithValue(error.error);
+      }
+   },
 );
 
 export const logout = createAsyncThunk('user/logout', async (_, { dispatch }) => {
@@ -113,6 +121,18 @@ const userSlice = createSlice({
                registrationError: null,
                success: false,
             };
+         })
+         .addCase(loginWithGoogle.pending, (state) => {
+            state.loading = true;
+         })
+         .addCase(loginWithGoogle.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload;
+            state.loginError = null;
+         })
+         .addCase(loginWithGoogle.rejected, (state, action) => {
+            state.loading = false;
+            state.loginError = action.payload;
          });
    },
 });

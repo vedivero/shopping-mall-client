@@ -19,12 +19,11 @@ export const createOrder = createAsyncThunk(
    async (payload, { dispatch, rejectWithValue }) => {
       try {
          const response = await api.post('/order', payload);
-         if (response.status !== 200) throw new Error(response.error);
          dispatch(showToastMessage({ message: '결제가 완료되었습니다.', status: 'success' }));
          dispatch(getCartQty());
          return response.data.orderNum;
       } catch (error) {
-         console.error(error);
+         console.error(error.message);
          dispatch(showToastMessage({ message: '주문 요청이 실패했습니다.', status: 'error' }));
          return rejectWithValue(error.error);
       }
