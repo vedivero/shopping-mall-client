@@ -13,10 +13,8 @@ const CartPage = () => {
    const { user } = useSelector((state) => state.user);
 
    useEffect(() => {
-      if (user) {
-         dispatch(getCartList());
-      }
-   }, [user]);
+      if (user) dispatch(getCartList());
+   }, [user, dispatch]);
 
    return (
       <Container>

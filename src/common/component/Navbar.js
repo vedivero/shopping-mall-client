@@ -15,10 +15,8 @@ const Navbar = ({ user }) => {
    const [showSearchBox, setShowSearchBox] = useState(false);
 
    useEffect(() => {
-      if (user) {
-         dispatch(getCartList());
-      }
-   }, [user]);
+      if (user) dispatch(getCartList());
+   }, [user, dispatch]);
 
    const menuList = [
       '전체',
@@ -47,6 +45,9 @@ const Navbar = ({ user }) => {
    const handleLogout = () => {
       dispatch(logout());
    };
+
+   const handleMenuClick = () => {};
+
    return (
       <div>
          {showSearchBox && (
@@ -67,7 +68,7 @@ const Navbar = ({ user }) => {
                &times;
             </button>
 
-            <div className='side-menu-list' id='menu-list'>
+            <div className='side-menu-list' id='menu-list' onClick={handleMenuClick}>
                {menuList.map((menu, index) => (
                   <button key={index}>{menu}</button>
                ))}

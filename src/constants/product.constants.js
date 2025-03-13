@@ -12,18 +12,23 @@ export const PRODUCT_EDIT_REQUEST = 'PRODUCT_EDIT_REQUEST';
 export const PRODUCT_EDIT_SUCCESS = 'PRODUCT_EDIT_SUCCESS';
 export const PRODUCT_EDIT_FAIL = 'PRODUCT_EDIT_FAIL';
 export const SET_FILTERED_LIST = 'SET_FILTERED_LIST';
-export const CATEGORY = [
-   '상의',
-   '아우터',
-   '재킷',
-   '카디건',
-   '셔츠',
-   '티셔츠',
-   '하의',
-   '청바지',
-   '면바지',
-   '슬랙스',
-];
+export const CATEGORY_MAP = {
+   상의: 'tops',
+   아우터: 'outerwear',
+   재킷: 'jackets',
+   카디건: 'cardigans',
+   셔츠: 'shirts',
+   티셔츠: 'tshirts',
+   하의: 'bottoms',
+   청바지: 'jeans',
+   면바지: 'cotton_pants',
+   슬랙스: 'slacks',
+};
+
+export const REVERSE_CATEGORY_MAP = Object.fromEntries(
+   Object.entries(CATEGORY_MAP).map(([kor, eng]) => [eng, kor]),
+);
+
 export const STATUS = ['active', 'disactive'];
 export const SIZE = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 export const TOGGLE_ITEM_DIALOG = 'TOGGLE_ITEM_DIALOG';

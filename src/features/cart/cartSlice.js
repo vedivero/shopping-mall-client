@@ -44,7 +44,7 @@ export const deleteCartItem = createAsyncThunk(
       try {
          const response = await api.delete(`/cart/${id}`);
          dispatch(getCartList());
-         dispatch(showToastMessage({ message: '장바구니에서 해당 상품을 삭제했습니다.', status: 'success' }));
+         dispatch(showToastMessage({ message: '해당 상품을 삭제했습니다.', status: 'success' }));
          return response.data.cartItemQty;
       } catch (error) {
          console.error(error.message);
