@@ -27,7 +27,6 @@ const Login = () => {
    };
 
    const handleGoogleLogin = async (googleData) => {
-      console.log('googleData : ', googleData);
       dispatch(loginWithGoogle(googleData.credential));
    };
 
