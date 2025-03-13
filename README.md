@@ -4,12 +4,15 @@
 
 <!--#<img width="1498" alt="Screenshot 2023-08-09 at 10 59 52" src="https://github.com/legobitna/noona-shoppingmall-fe/assets/21190318/534ec667-da75-4939-a124-49c9315ef13d">-->
 
-* 웹 페이지 링크 🖥 : https://mens-closet.netlify.app/
+* 웹 페이지 링크 🖥
+  - https://mens-closet.netlify.app/
 * 관리자 계정 정보
 
   |account|password|
   |-------|--------|
   |admin@eamil.com|123|
+
+<br>
 
 ## 프로젝트 목표 🎯
 
@@ -21,6 +24,8 @@
 - **장바구니 기능** (상품 추가, 수량 변경, 삭제)
 - **주문 기능** (배송지 및 결제 정보 입력)
 - **관리자 기능** (상품 및 주문 관리)
+
+<br>
 
 ## User Story 📖
 
@@ -59,10 +64,13 @@
 * 관리자는 주문의 상태를 (준비중, 배송중, 완료, 환불) 수정할 수 있다.
 * 관리자는 주문번호로 주문을 검색할 수 있다.
 
+<br>
+
 ## 사용된 기술🏛
 ### FE
 * React
 * Redux-thunk
+* Redux Toolkit
 ### BE
 * Nodejs
 * Express
