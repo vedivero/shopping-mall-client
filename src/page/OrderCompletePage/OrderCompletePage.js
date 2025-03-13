@@ -23,7 +23,7 @@ const OrderCompletePage = () => {
          <div>주문번호 : {orderNum}</div>
          <br />
          <div>
-            주문 내역 확인은 내 주문`` 메뉴에서 확인해주세요
+            주문 내역 확인은 내 주문 메뉴에서 확인해주세요
             <div className='text-align-center'>
                <Link to={'/account/purchase'}>내 주문 바로가기</Link>
             </div>
