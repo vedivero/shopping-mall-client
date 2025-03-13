@@ -11,6 +11,7 @@ export const loginWithEmail = createAsyncThunk(
          sessionStorage.setItem('token', response.data.token);
          return response.data;
       } catch (error) {
+         console.error('이메일 로그인 실패 : ', error.message);
          dispatch(
             showToastMessage({
                message: '로그인 정보가 일치하지 않습니다.',
@@ -28,9 +29,10 @@ export const loginWithGoogle = createAsyncThunk(
       try {
          const response = await api.post('/auth/google', { token });
          sessionStorage.setItem('token', response.data.sessionToken);
-         return response.data;
+         console.log(response);
+         return response.data.data;
       } catch (error) {
-         console.error('구글 로그인 실패', error.message);
+         console.error('구글 로그인 실패 : ', error.message);
          return rejectWithValue(error.error);
       }
    },
@@ -55,6 +57,7 @@ export const registerUser = createAsyncThunk(
          navigate('/login');
          return response.data.data;
       } catch (error) {
+         console.error('회원 등록 실패 : ', error.message);
          dispatch(showToastMessage({ message: '회원 가입 중 오류가 발생했습니다.', status: 'error' }));
          return rejectWithValue(error.error);
       }
