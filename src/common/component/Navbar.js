@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faBox, faSearch, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
@@ -6,12 +6,18 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../features/user/userSlice';
+import { getCartList } from '../../features/cart/cartSlice';
 
 const Navbar = ({ user }) => {
    const dispatch = useDispatch();
    const { cartItemCount } = useSelector((state) => state.cart);
    const isMobile = window.navigator.userAgent.indexOf('Mobile') !== -1;
    const [showSearchBox, setShowSearchBox] = useState(false);
+
+   useEffect(() => {
+      dispatch(getCartList());
+   }, []);
+
    const menuList = [
       '전체',
       '상의',
@@ -25,6 +31,7 @@ const Navbar = ({ user }) => {
       '면바지',
       '슬랙스',
    ];
+
    let [width, setWidth] = useState(0);
    let navigate = useNavigate();
    const onCheckEnter = (event) => {
