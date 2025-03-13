@@ -67,10 +67,6 @@
 * React
 * Redux-thunk
 * Redux Toolkit
-### BE
-* Nodejs
-* Express
-* MongoDB
+
 ### Devops
-* Glitch
 * Netlify 
