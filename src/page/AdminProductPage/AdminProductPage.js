@@ -35,7 +35,7 @@ const AdminProductPage = () => {
 
    useEffect(() => {
       dispatch(getProductList({ ...searchQuery }));
-   }, [query]);
+   }, [query, dispatch, searchQuery]);
 
    useEffect(() => {
       if (searchQuery.name === '') {
@@ -44,7 +44,7 @@ const AdminProductPage = () => {
       const params = new URLSearchParams(searchQuery);
       const query = params.toString();
       navigate('?' + query);
-   }, [searchQuery]);
+   }, [searchQuery, navigate]);
 
    useEffect(() => {
       if (success) {
@@ -92,7 +92,6 @@ const AdminProductPage = () => {
                deleteItem={deleteItem}
                openEditForm={openEditForm}
             />
-            \\
             <ReactPaginate
                nextLabel='next >'
                onPageChange={handlePageClick}
