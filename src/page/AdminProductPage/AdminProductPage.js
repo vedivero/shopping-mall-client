@@ -6,13 +6,13 @@ import ReactPaginate from 'react-paginate';
 import SearchBox from '../../common/component/SearchBox';
 import NewItemDialog from './component/NewItemDialog';
 import ProductTable from './component/ProductTable';
-import { getProductList, deleteProduct, setSelectedProduct } from '../../features/product/productSlice';
+import { deleteProduct, setSelectedProduct, getAdminProductList } from '../../features/product/productSlice';
 
 const AdminProductPage = () => {
    const navigate = useNavigate();
    const [query] = useSearchParams();
    const dispatch = useDispatch();
-   const productList = useSelector((state) => state.product.productList) || [];
+   const productList = useSelector((state) => state.product.adminProductList) || [];
    const success = useSelector((state) => state.product.success);
    const [showDialog, setShowDialog] = useState(false);
    const [searchQuery, setSearchQuery] = useState({
@@ -34,7 +34,7 @@ const AdminProductPage = () => {
    ];
 
    useEffect(() => {
-      dispatch(getProductList({ ...searchQuery }));
+      dispatch(getAdminProductList({ ...searchQuery }));
    }, [query, dispatch, searchQuery]);
 
    useEffect(() => {

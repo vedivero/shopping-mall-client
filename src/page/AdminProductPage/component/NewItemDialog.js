@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Modal, Button, Row, Col, Alert } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import CloudinaryUploadWidget from '../../../utils/CloudinaryUploadWidget';
-import { CATEGORY, STATUS, SIZE, CATEGORY_MAP } from '../../../constants/product.constants';
+import { SIZE, CATEGORY_MAP, STATUS_MAP } from '../../../constants/product.constants';
 import '../style/adminProduct.style.css';
 import { clearError, createProduct, editProduct } from '../../../features/product/productSlice';
 
@@ -26,7 +26,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
 
    useEffect(() => {
       if (success) setShowDialog(false);
-   }, [success]);
+   }, [success, setShowDialog]);
 
    useEffect(() => {
       if (error) {
@@ -41,7 +41,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
       if (showDialog) {
          if (mode === 'edit') {
             setFormData(selectedProduct);
-            // 객체형태로 온 stock을  다시 배열로 세팅해주기
+            // 객체형태로 온 stock =>  다시 배열로
             const sizeArray = Object.keys(selectedProduct.stock).map((size) => [
                size,
                selectedProduct.stock[size],
@@ -52,7 +52,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
             setStock([]);
          }
       }
-   }, [showDialog]);
+   }, [showDialog, dispatch, error, mode, selectedProduct, success]);
 
    const handleClose = () => {
       setShowDialog(false);
@@ -70,9 +70,17 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
       }, {});
 
       const categoryEnglish = formData.category.map((cat) => CATEGORY_MAP[cat] || cat);
+      const statusEnglish = STATUS_MAP[formData.status] || formData.status;
 
       if (mode === 'new') {
-         dispatch(createProduct({ ...formData, category: categoryEnglish, stock: totalStock }));
+         dispatch(
+            createProduct({
+               ...formData,
+               category: categoryEnglish,
+               stock: totalStock,
+               status: statusEnglish,
+            }),
+         );
       } else {
          dispatch(
             editProduct({
@@ -275,9 +283,9 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
                <Form.Group as={Col} controlId='status'>
                   <Form.Label>상품 상태(게시, 숨김)</Form.Label>
                   <Form.Select value={formData.status} onChange={handleChange} required>
-                     {STATUS.map((item, idx) => (
-                        <option key={idx} value={item.toLowerCase()}>
-                           {item}
+                     {Object.keys(STATUS_MAP).map((kor, idx) => (
+                        <option key={idx} value={STATUS_MAP[kor]}>
+                           {kor}
                         </option>
                      ))}
                   </Form.Select>
