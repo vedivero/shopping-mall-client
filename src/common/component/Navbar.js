@@ -15,7 +15,7 @@ const Navbar = ({ user }) => {
    const { cartItemCount } = useSelector((state) => state.cart);
    const isMobile = window.navigator.userAgent.indexOf('Mobile') !== -1;
    const [showSearchBox, setShowSearchBox] = useState(false);
-   const [selectedCategory, setSelectedCategory] = useState(null); // 선택된 카테고리 저장
+   const [selectedCategory, setSelectedCategory] = useState(null);
 
    useEffect(() => {
       if (user) dispatch(getUserProductList());
@@ -59,13 +59,12 @@ const Navbar = ({ user }) => {
    const handleMenuClick = (menu) => {
       if (menu === '전체') {
          setSelectedCategory(null);
-         dispatch(getUserProductList({ page: 1 }));
+         dispatch(getUserProductList({ page: 1, category: null }));
          return navigate('/');
       }
 
       const categoryEnglish = CATEGORY_MAP[menu] || menu;
-
-      setSelectedCategory(categoryEnglish); // 선택된 카테고리 업데이트
+      setSelectedCategory(categoryEnglish);
       dispatch(getUserProductList({ page: 1, category: categoryEnglish }));
       navigate(`?category=${categoryEnglish}`);
    };
