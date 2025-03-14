@@ -3,17 +3,17 @@ import ProductCard from './components/ProductCard';
 import { Row, Col, Container } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProductList } from '../../features/product/productSlice';
+import { getUserProductList } from '../../features/product/productSlice';
 
 const LandingPage = () => {
    const dispatch = useDispatch();
 
-   const productList = useSelector((state) => state.product.productList);
+   const productList = useSelector((state) => state.product.userProductList);
    const [query] = useSearchParams();
    const name = query.get('name');
    useEffect(() => {
       dispatch(
-         getProductList({
+         getUserProductList({
             name,
          }),
       );

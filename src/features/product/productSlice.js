@@ -2,11 +2,24 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../utils/api';
 import { showToastMessage } from '../common/uiSlice';
 
-export const getProductList = createAsyncThunk(
-   'products/getProductList',
+export const getUserProductList = createAsyncThunk(
+   'products/getUserProductList',
    async (query, { rejectWithValue }) => {
       try {
          const response = await api.get('/product', { params: { ...query } });
+         return response.data;
+      } catch (error) {
+         console.error(error.message);
+         return rejectWithValue(error.error);
+      }
+   },
+);
+
+export const getAdminProductList = createAsyncThunk(
+   'products/getAdminProductList',
+   async (query, { rejectWithValue }) => {
+      try {
+         const response = await api.get('/product/admin', { params: { ...query } });
          return response.data;
       } catch (error) {
          console.error(error.message);
@@ -48,7 +61,7 @@ export const createProduct = createAsyncThunk(
       try {
          const response = await api.post('/product/regist', formData);
          dispatch(showToastMessage({ message: '상품 등록이 완료되었습니다.', status: 'success' }));
-         dispatch(getProductList({ page: 1 }));
+         dispatch(getUserProductList({ page: 1 }));
          return response.data.data;
       } catch (error) {
          console.error(error.message);
@@ -64,7 +77,7 @@ export const deleteProduct = createAsyncThunk(
       try {
          const response = await api.delete(`/product/${id}`);
          dispatch(showToastMessage({ message: '상품 삭제 완료', status: 'success' }));
-         dispatch(getProductList({ page: 1 }));
+         dispatch(getUserProductList({ page: 1 }));
          return response.data;
       } catch (error) {
          console.error(error.message);
@@ -78,7 +91,7 @@ export const editProduct = createAsyncThunk(
    async ({ id, ...formData }, { dispatch, rejectWithValue }) => {
       try {
          const response = await api.put(`/product/${id}`, formData);
-         dispatch(getProductList({ page: 1 }));
+         dispatch(getUserProductList({ page: 1 }));
          dispatch(showToastMessage({ message: '상품 수정이 완료되었습니다.', status: 'success' }));
          return response.data.data;
       } catch (error) {
@@ -138,14 +151,31 @@ const productSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
          })
-         .addCase(getProductList.pending, (state) => {
+         .addCase(getUserProductList.pending, (state) => {
             state.loading = true;
          })
-         .addCase(getProductList.fulfilled, (state, action) => {
+         .addCase(getUserProductList.fulfilled, (state, action) => {
             state.loading = false;
-            state.productList = action.payload.productList;
+            state.userProductList = action.payload.productList;
             state.error = '';
             state.totalPageNum = action.payload.totalPageNum;
+         })
+         .addCase(getUserProductList.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+         })
+         .addCase(getAdminProductList.pending, (state) => {
+            state.loading = true;
+         })
+         .addCase(getAdminProductList.fulfilled, (state, action) => {
+            state.loading = false;
+            state.adminProductList = action.payload.productList;
+            state.error = '';
+            state.totalPageNum = action.payload.totalPageNum;
+         })
+         .addCase(getAdminProductList.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
          })
          .addCase(editProduct.pending, (state, action) => {
             state.loading = true;
