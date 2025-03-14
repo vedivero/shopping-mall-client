@@ -4,11 +4,12 @@ import { showToastMessage } from '../common/uiSlice';
 
 export const getUserProductList = createAsyncThunk(
    'products/getUserProductList',
-   async ({ page = 1, category = null, name = null }, { rejectWithValue }) => {
+   async ({ category = null, name = null }, { rejectWithValue }) => {
       try {
          const response = await api.get('/product', {
-            params: { page, category, name },
+            params: { category, name },
          });
+         console.log('response.data : ', response.data);
          return response.data;
       } catch (error) {
          console.error(error.message);
