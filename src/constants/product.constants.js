@@ -29,13 +29,12 @@ export const REVERSE_CATEGORY_MAP = Object.fromEntries(
    Object.entries(CATEGORY_MAP).map(([kor, eng]) => [eng, kor]),
 );
 
-// export const STATUS = ['active', 'disactive'];
 export const STATUS_MAP = { 게시: 'active', 숨김: 'disactive' };
 export const REVERSE_STATUS_MAP = Object.fromEntries(
    Object.entries(STATUS_MAP).map(([kor, eng]) => [eng, kor]),
 );
 
-export const SIZE = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+export const SIZE = ['M', 'L', 'XL', 'XXL'];
 export const TOGGLE_ITEM_DIALOG = 'TOGGLE_ITEM_DIALOG';
 export const SEARCH_PRODUCT_REQUEST = ' SEARCH_PRODUCT_REQUEST';
 export const SEARCH_PRODUCT_SUCCESS = ' SEARCH_PRODUCT_SUCCESS';
