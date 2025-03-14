@@ -17,26 +17,29 @@ const LandingPage = () => {
             name,
          }),
       );
-   }, [query]);
+   }, [query, dispatch, name]);
 
    return (
       <Container>
          <Row>
-            {productList?.length > 0 ? (
-               productList.map((item) => (
-                  <Col md={3} sm={12} key={item._id}>
-                     <ProductCard item={item} />
-                  </Col>
-               ))
-            ) : (
-               <div className='text-align-center empty-bag'>
-                  {name === '' ? (
-                     <h2>등록된 상품이 없습니다.</h2>
-                  ) : (
-                     <h2>검색하신 상풍명 : {name} 일치한 상품이 없습니다.</h2>
-                  )}
-               </div>
-            )}
+            {productList === undefined
+               ? null
+               : productList?.length > 0
+               ? productList.map((item) => (
+                    <Col md={3} sm={12} key={item._id}>
+                       <ProductCard item={item} />
+                    </Col>
+                 ))
+               : name !== undefined &&
+                 name !== null && (
+                    <div className='text-align-center empty-bag'>
+                       {name.trim() === '' ? (
+                          <h2>등록된 상품이 없습니다.</h2>
+                       ) : (
+                          <h2>'{name}'의 검색 결과가 없습니다.</h2>
+                       )}
+                    </div>
+                 )}
          </Row>
       </Container>
    );
