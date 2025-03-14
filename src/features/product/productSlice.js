@@ -4,9 +4,11 @@ import { showToastMessage } from '../common/uiSlice';
 
 export const getUserProductList = createAsyncThunk(
    'products/getUserProductList',
-   async (query, { rejectWithValue }) => {
+   async ({ page = 1, category = null, name = null }, { rejectWithValue }) => {
       try {
-         const response = await api.get('/product', { params: { ...query } });
+         const response = await api.get('/product', {
+            params: { page, category, name },
+         });
          return response.data;
       } catch (error) {
          console.error(error.message);
@@ -20,19 +22,6 @@ export const getAdminProductList = createAsyncThunk(
    async (query, { rejectWithValue }) => {
       try {
          const response = await api.get('/product/admin', { params: { ...query } });
-         return response.data;
-      } catch (error) {
-         console.error(error.message);
-         return rejectWithValue(error.error);
-      }
-   },
-);
-
-export const getProductListByCategory = createAsyncThunk(
-   'products/getProductsByCategory',
-   async (category, { rejectWithValue }) => {
-      try {
-         const response = await api.get('/product/category', { params: { category } });
          return response.data;
       } catch (error) {
          console.error(error.message);

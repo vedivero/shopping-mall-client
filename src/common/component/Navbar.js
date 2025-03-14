@@ -7,15 +7,18 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../features/user/userSlice';
 import { getCartList } from '../../features/cart/cartSlice';
+import { CATEGORY_MAP } from '../../constants/product.constants';
+import { getUserProductList } from '../../features/product/productSlice';
 
 const Navbar = ({ user }) => {
    const dispatch = useDispatch();
    const { cartItemCount } = useSelector((state) => state.cart);
    const isMobile = window.navigator.userAgent.indexOf('Mobile') !== -1;
    const [showSearchBox, setShowSearchBox] = useState(false);
+   const [selectedCategory, setSelectedCategory] = useState(null); // 선택된 카테고리 저장
 
    useEffect(() => {
-      if (user) dispatch(getCartList());
+      if (user) dispatch(getUserProductList());
    }, [user, dispatch]);
 
    const menuList = [
@@ -34,19 +37,38 @@ const Navbar = ({ user }) => {
 
    let [width, setWidth] = useState(0);
    let navigate = useNavigate();
+
    const onCheckEnter = (event) => {
       if (event.key === 'Enter') {
-         if (event.target.value === '') {
+         const keyword = event.target.value.trim();
+
+         if (keyword === '') {
+            dispatch(getUserProductList({ page: 1, category: selectedCategory }));
             return navigate('/');
          }
-         navigate(`?name=${event.target.value}`);
+
+         dispatch(getUserProductList({ page: 1, category: selectedCategory, name: keyword }));
+         navigate(`?name=${keyword}${selectedCategory ? `&category=${selectedCategory}` : ''}`);
       }
    };
+
    const handleLogout = () => {
       dispatch(logout());
    };
 
-   const handleMenuClick = () => {};
+   const handleMenuClick = (menu) => {
+      if (menu === '전체') {
+         setSelectedCategory(null);
+         dispatch(getUserProductList({ page: 1 }));
+         return navigate('/');
+      }
+
+      const categoryEnglish = CATEGORY_MAP[menu] || menu;
+
+      setSelectedCategory(categoryEnglish); // 선택된 카테고리 업데이트
+      dispatch(getUserProductList({ page: 1, category: categoryEnglish }));
+      navigate(`?category=${categoryEnglish}`);
+   };
 
    return (
       <div>
@@ -68,9 +90,11 @@ const Navbar = ({ user }) => {
                &times;
             </button>
 
-            <div className='side-menu-list' id='menu-list' onClick={handleMenuClick}>
+            <div className='side-menu-list' id='menu-list'>
                {menuList.map((menu, index) => (
-                  <button key={index}>{menu}</button>
+                  <button key={index} onClick={() => handleMenuClick(menu)}>
+                     {menu}
+                  </button>
                ))}
             </div>
          </div>
@@ -124,13 +148,13 @@ const Navbar = ({ user }) => {
          <div className='nav-menu-area'>
             <ul className='menu'>
                {menuList.map((menu, index) => (
-                  <li key={index}>
+                  <li key={index} onClick={() => handleMenuClick(menu)}>
                      <a href='#'>{menu}</a>
                   </li>
                ))}
             </ul>
-            {!isMobile && ( // admin페이지에서 같은 search-box스타일을 쓰고있음 그래서 여기서 서치박스 안보이는것 처리를 해줌
-               <div className='search-box landing-search-box '>
+            {!isMobile && (
+               <div className='search-box landing-search-box'>
                   <FontAwesomeIcon icon={faSearch} />
                   <input type='text' placeholder='제품검색' onKeyPress={onCheckEnter} />
                </div>
