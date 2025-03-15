@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
 import { Button } from 'react-bootstrap';
 import '../App.css';
 import '../common/style/common.style.css';
@@ -7,31 +7,36 @@ const CLOUDNAME = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
 const UPLOADPRESET = process.env.REACT_APP_CLOUDINARY_PRESET;
 
 class CloudinaryUploadWidget extends Component {
+   constructor(props) {
+      super(props);
+      this.uploadButtonRef = createRef();
+   }
+
    componentDidMount() {
-      var myWidget = window.cloudinary.createUploadWidget(
+      this.myWidget = window.cloudinary.createUploadWidget(
          {
             cloudName: CLOUDNAME,
             uploadPreset: UPLOADPRESET,
          },
          (error, result) => {
             if (!error && result && result.event === 'success') {
-               document.getElementById('uploadedimage').setAttribute('src', result.info.secure_url);
+               console.log('Cloudinary Upload Success:', result.info.secure_url);
+
                this.props.uploadImage(result.info.secure_url);
+            } else if (error) {
+               console.error('Cloudinary Upload Error:', error);
             }
-         }, //https://cloudinary.com/documentation/react_image_and_video_upload
-      );
-      document.getElementById('upload_widget').addEventListener(
-         'click',
-         function () {
-            myWidget.open();
          },
-         false,
       );
+
+      if (this.uploadButtonRef.current) {
+         this.uploadButtonRef.current.addEventListener('click', () => this.myWidget.open());
+      }
    }
 
    render() {
       return (
-         <Button id='upload_widget' size='sm' className='ml-2'>
+         <Button ref={this.uploadButtonRef} id='upload_widget' size='sm' className='ml-2'>
             Upload Image +
          </Button>
       );
