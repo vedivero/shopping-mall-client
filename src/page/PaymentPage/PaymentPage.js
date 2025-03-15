@@ -18,18 +18,19 @@ const PaymentPage = () => {
       name: '',
       number: '',
    });
+
    const navigate = useNavigate();
    const [firstLoading, setFirstLoading] = useState(true);
    const [shipInfo, setShipInfo] = useState({
-      firstName: '',
-      lastName: '',
+      name: '',
       contact: '',
       address: '',
       city: '',
       zip: '',
    });
+
    const { cartList, totalPrice } = useSelector((state) => state.cart);
-   console.log('shipInfo : ', shipInfo);
+
    useEffect(() => {
       if (firstLoading) {
          setFirstLoading(false);
@@ -38,16 +39,16 @@ const PaymentPage = () => {
             navigate(`/payment/success`);
          }
       }
-   }, [orderNum]);
+   }, [orderNum, firstLoading, navigate]);
 
    const handleSubmit = (event) => {
       event.preventDefault();
-      const { firstName, lastName, contact, address, city, zip } = shipInfo;
+      const { name, contact, address, city, zip } = shipInfo;
       dispatch(
          createOrder({
             totalPrice,
             shipTo: { address, city, zip },
-            contact: { firstName, lastName, contact },
+            contact: { name, contact },
             orderList: cartList.map((item) => {
                return {
                   productId: item.productId._id,
@@ -90,7 +91,7 @@ const PaymentPage = () => {
                   <div>
                      <Form onSubmit={handleSubmit}>
                         <Row className='mb-3'>
-                           <Form.Group as={Col} controlId='lastName'>
+                           {/* <Form.Group as={Col} controlId='lastName'>
                               <Form.Label>성</Form.Label>
                               <Form.Control
                                  type='text'
@@ -108,6 +109,11 @@ const PaymentPage = () => {
                                  required
                                  name='firstName'
                               />
+                           </Form.Group> */}
+
+                           <Form.Group className='mb-3' controlId='name'>
+                              <Form.Label>이름</Form.Label>
+                              <Form.Control type='text' onChange={handleFormChange} required name='name' />
                            </Form.Group>
                         </Row>
 
