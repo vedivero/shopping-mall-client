@@ -74,6 +74,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
       }
       if (stock.length === 0) return setStockError(true);
 
+      setStockError(false);
       setImageError(false);
 
       const totalStock = stock.reduce((total, item) => {
@@ -146,7 +147,14 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
    };
 
    const uploadImage = (url) => {
-      setFormData({ ...formData, image: url });
+      console.log(url);
+      if (!url) {
+         setImageError(true);
+         return;
+      }
+
+      setFormData((prevData) => ({ ...prevData, image: url }));
+      setImageError(false);
    };
 
    return (
