@@ -22,6 +22,7 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
    const [formData, setFormData] = useState(mode === 'new' ? { ...InitialFormData } : selectedProduct);
    const [stock, setStock] = useState([]);
    const dispatch = useDispatch();
+   const [imageError, setImageError] = useState(false);
    const [stockError, setStockError] = useState(false);
 
    useEffect(() => {
@@ -62,11 +63,18 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
       setFormData({ ...InitialFormData });
       setStock([]);
       setStockError(false);
+      setImageError(false);
    };
 
    const handleSubmit = (event) => {
       event.preventDefault();
+      if (!formData.image) {
+         setImageError(true);
+         return;
+      }
       if (stock.length === 0) return setStockError(true);
+
+      setImageError(false);
 
       const totalStock = stock.reduce((total, item) => {
          return { ...total, [item[0]]: parseInt(item[1]) };
@@ -245,13 +253,15 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
             <Form.Group className='mb-3' controlId='Image' required>
                <Form.Label>상품 이미지</Form.Label>
                <CloudinaryUploadWidget uploadImage={uploadImage} />
-
-               <img
-                  id='uploadedimage'
-                  src={formData.image}
-                  className='upload-image mt-2'
-                  alt='uploadedimage'
-               />
+               {imageError && <Alert variant='danger'>상품 이미지를 등록해주세요.</Alert>}
+               {formData.image && (
+                  <img
+                     id='uploadedimage'
+                     src={formData.image}
+                     className='upload-image mt-2'
+                     alt='uploadedimage'
+                  />
+               )}
             </Form.Group>
 
             <Row className='mb-3'>
