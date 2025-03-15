@@ -54,7 +54,10 @@ export const createProduct = createAsyncThunk(
          return response.data.data;
       } catch (error) {
          console.error(error.message);
-         dispatch(showToastMessage({ message: '상품 등록이 실패했습니다.', status: 'error' }));
+         const errorMessage = error.message.includes('이미 등록된 상품번호 입니다.')
+            ? '이미 등록된 상품번호 입니다.'
+            : '상품 등록이 실패했습니다.';
+         dispatch(showToastMessage({ message: errorMessage, status: 'error' }));
          return rejectWithValue(error.error);
       }
    },
