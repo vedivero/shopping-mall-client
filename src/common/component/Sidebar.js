@@ -13,17 +13,17 @@ const Sidebar = () => {
 
    const NavbarContent = () => {
       return (
-         <div>
+         <div style={{ cursor: 'pointer' }}>
             <Link to='/'>
                <img width={200} src='/image/logo.png' alt='logo.png' />
             </Link>
-            <div className='sidebar-item'>Admin Account</div>
+            {/* <div className='sidebar-item'>관리자 계정</div> */}
             <ul className='sidebar-area'>
                <li className='sidebar-item' onClick={() => handleSelectMenu('/admin/product?page=1')}>
-                  product
+                  상품 관리
                </li>
                <li className='sidebar-item' onClick={() => handleSelectMenu('/admin/order?page=1')}>
-                  order
+                  주문 관리
                </li>
             </ul>
          </div>
