@@ -23,8 +23,8 @@ export const UPDATE_ORDER_REQUEST = 'UPDATE_ORDER_REQUEST';
 export const UPDATE_ORDER_SUCCESS = 'UPDATE_ORDER_SUCCESS';
 export const UPDATE_ORDER_FAIL = 'UPDATE_ORDER_FAIL';
 export const badgeBg = {
-   preparing: 'primary',
-   shipping: 'warning',
+   preparing: 'dark',
+   shipping: 'primary',
    refund: 'danger',
    delivered: 'success',
 };

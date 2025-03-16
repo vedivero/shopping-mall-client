@@ -79,9 +79,9 @@ const OrderDetailDialog = ({ open, handleClose }) => {
             <Form onSubmit={submitStatus}>
                <Form.Group as={Col} controlId='status'>
                   <Form.Label>주문 상태 </Form.Label>
-                  <Form.Select value={REVERSE_STATUS_MAP[orderStatus]} onChange={handleStatusChange}>
-                     {Object.keys(STATUS_MAP).map((kor, idx) => (
-                        <option key={idx} value={STATUS_MAP[kor]}>
+                  <Form.Select value={orderStatus} onChange={handleStatusChange}>
+                     {Object.entries(STATUS_MAP).map(([kor, eng], idx) => (
+                        <option key={idx} value={eng}>
                            {kor}
                         </option>
                      ))}

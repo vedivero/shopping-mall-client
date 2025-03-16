@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Badge } from 'react-bootstrap';
-import { badgeBg } from '../../../constants/order.constants';
+import { badgeBg, REVERSE_STATUS_MAP } from '../../../constants/order.constants';
 import { currencyFormat } from '../../../utils/number';
 
 const OrderTable = ({ header, data, openEditForm }) => {
@@ -35,7 +35,7 @@ const OrderTable = ({ header, data, openEditForm }) => {
 
                         <th>{currencyFormat(item.totalPrice)}</th>
                         <th>
-                           <Badge bg={badgeBg[item.status]}>{item.status}</Badge>
+                           <Badge bg={badgeBg[item.status]}>{REVERSE_STATUS_MAP[item.status]}</Badge>
                         </th>
                      </tr>
                   ))
