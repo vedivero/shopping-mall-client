@@ -1,3 +1,45 @@
-.modal-dialog{
-    max-width: 700px;
+.modal-dialog {
+   max-width: 700px;
+}
+
+/* 테이블 전체 스타일 */
+.table {
+   font-size: 16px; /* 기본 글씨 크기 확대 */
+   color: #333; /* 글씨 색상을 진한 회색으로 */
+   border-collapse: collapse;
+}
+
+/* 테이블 헤더 스타일 */
+.table thead th {
+   font-size: 18px; /* 헤더 글씨 크기 확대 */
+   font-weight: bold; /* 글씨 두껍게 */
+   background-color: #f8f9fa; /* 배경색 추가 */
+   padding: 12px; /* 헤더 내부 여백 추가 */
+}
+
+.table tbody tr {
+   height: 60px; /* 테이블 행 높이 고정 */
+}
+
+/* 테이블 데이터 셀 스타일 */
+.table tbody td {
+   font-size: 16px; /* 본문 글씨 크기 확대 */
+   padding: 10px; /* 셀 내부 여백 추가 */
+   vertical-align: middle; /* 텍스트가 수직 중앙 정렬되도록 설정 */
+}
+
+.table tbody td.product-name {
+   max-width: 200px; /* 상품명 최대 너비 제한 */
+   white-space: nowrap; /* 한 줄로 유지 */
+   overflow: hidden; /* 넘칠 경우 숨김 */
+   text-overflow: ellipsis; /* "..." 처리 */
+}
+
+/* 상태 뱃지 스타일 */
+.badge {
+   font-size: 16px; /* 모든 상태에 대해 동일한 글씨 크기 적용 */
+   padding: 6px 12px; /* 내부 여백을 통일하여 높이 변경 방지 */
+   min-width: 80px; /* 최소 너비 설정하여 변경 시 크기 차이 없음 */
+   display: inline-block; /* 크기 고정 */
+   text-align: center; /* 가운데 정렬 */
 }
