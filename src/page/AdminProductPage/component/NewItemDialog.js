@@ -147,7 +147,6 @@ const NewItemDialog = ({ mode, showDialog, setShowDialog }) => {
    };
 
    const uploadImage = (url) => {
-      console.log(url);
       if (!url) {
          setImageError(true);
          return;

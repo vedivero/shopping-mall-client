@@ -46,11 +46,14 @@ export const getOrderList = createAsyncThunk(
    'order/getOrderList',
    async (query, { rejectWithValue, dispatch }) => {
       try {
-         const response = await api.get('/order/all');
-         return response.data;
+         const response = await api.get('/order/all', { params: { ...query } });
+         return response.data.data;
       } catch (error) {
-         console.error(error.message);
-         dispatch(showToastMessage({ message: '주문 목록을 불러오지 못했습니다.', status: 'error' }));
+         if (error.status === 'fail') {
+            dispatch(showToastMessage({ message: '주문번호로 검색해 주세요.', status: 'error' }));
+         } else {
+            dispatch(showToastMessage({ message: '주문 목록을 불러오지 못했습니다.', status: 'error' }));
+         }
          return rejectWithValue(error.error);
       }
    },
@@ -59,9 +62,6 @@ export const getOrderList = createAsyncThunk(
 export const updateOrder = createAsyncThunk(
    'order/updateOrder',
    async ({ id, status }, { dispatch, rejectWithValue }) => {
-      console.log('🔹 업데이트할 주문 ID:', id);
-      console.log('🔹 변경할 상태:', status);
-
       try {
          const response = await api.put(`/order/${id}`, { status });
 
@@ -116,7 +116,7 @@ const orderSlice = createSlice({
          .addCase(getOrderList.fulfilled, (state, action) => {
             state.loading = false;
             state.error = '';
-            state.adminOrderList = action.payload.adminOrderList;
+            state.adminOrderList = action.payload.orders;
          })
          .addCase(getOrderList.rejected, (state, action) => {
             state.loading = false;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Modal, Button, Col, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { ORDER_STATUS, REVERSE_STATUS_MAP, STATUS_MAP } from '../../../constants/order.constants';
+import { STATUS_MAP } from '../../../constants/order.constants';
 import { currencyFormat } from '../../../utils/number';
 import { updateOrder } from '../../../features/order/orderSlice';
 
