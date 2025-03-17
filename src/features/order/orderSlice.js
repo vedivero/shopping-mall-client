@@ -45,12 +45,16 @@ export const getOrder = createAsyncThunk('/order/getOrder', async (_, { rejectWi
 export const getOrderList = createAsyncThunk(
    'order/getOrderList',
    async (query, { rejectWithValue, dispatch }) => {
+      console.log(query);
       try {
-         const response = await api.get('/order/all');
-         return response.data;
+         const response = await api.get('/order/all', { params: { ...query } });
+         return response.data.data;
       } catch (error) {
-         console.error(error.message);
-         dispatch(showToastMessage({ message: '주문 목록을 불러오지 못했습니다.', status: 'error' }));
+         if (error.status === 'fail') {
+            dispatch(showToastMessage({ message: '주문번호로 검색해 주세요.', status: 'error' }));
+         } else {
+            dispatch(showToastMessage({ message: '주문 목록을 불러오지 못했습니다.', status: 'error' }));
+         }
          return rejectWithValue(error.error);
       }
    },
@@ -116,7 +120,7 @@ const orderSlice = createSlice({
          .addCase(getOrderList.fulfilled, (state, action) => {
             state.loading = false;
             state.error = '';
-            state.adminOrderList = action.payload.adminOrderList;
+            state.adminOrderList = action.payload.orders;
          })
          .addCase(getOrderList.rejected, (state, action) => {
             state.loading = false;

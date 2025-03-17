@@ -17,10 +17,17 @@ const Login = () => {
    const [password, setPassword] = useState('');
 
    useEffect(() => {
-      if (loginError) {
+      let isMounted = true;
+
+      if (loginError && isMounted) {
          dispatch(clearErrors());
       }
-   }, [navigate]);
+
+      return () => {
+         isMounted = false;
+      };
+   }, [dispatch, loginError]);
+
    const handleLoginWithEmail = (event) => {
       event.preventDefault();
       dispatch(loginWithEmail({ email, password }));
@@ -30,9 +37,12 @@ const Login = () => {
       dispatch(loginWithGoogle(googleData.credential));
    };
 
-   if (user) {
-      navigate('/');
-   }
+   useEffect(() => {
+      if (user) {
+         navigate('/');
+      }
+   }, [user, navigate]);
+
    return (
       <>
          <Container className='login-area'>
