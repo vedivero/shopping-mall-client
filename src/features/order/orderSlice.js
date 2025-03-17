@@ -45,7 +45,6 @@ export const getOrder = createAsyncThunk('/order/getOrder', async (_, { rejectWi
 export const getOrderList = createAsyncThunk(
    'order/getOrderList',
    async (query, { rejectWithValue, dispatch }) => {
-      console.log(query);
       try {
          const response = await api.get('/order/all', { params: { ...query } });
          return response.data.data;
@@ -63,9 +62,6 @@ export const getOrderList = createAsyncThunk(
 export const updateOrder = createAsyncThunk(
    'order/updateOrder',
    async ({ id, status }, { dispatch, rejectWithValue }) => {
-      console.log('🔹 업데이트할 주문 ID:', id);
-      console.log('🔹 변경할 상태:', status);
-
       try {
          const response = await api.put(`/order/${id}`, { status });
 
