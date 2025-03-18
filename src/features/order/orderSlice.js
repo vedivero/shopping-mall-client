@@ -83,6 +83,11 @@ const orderSlice = createSlice({
       setSelectedOrder: (state, action) => {
          state.selectedOrder = action.payload;
       },
+      resetOrder: (state) => {
+         state.orderNum = '';
+         state.selectedOrder = {};
+         state.error = '';
+      },
    },
    extraReducers: (builder) => {
       builder
@@ -140,5 +145,5 @@ const orderSlice = createSlice({
    },
 });
 
-export const { setSelectedOrder } = orderSlice.actions;
+export const { setSelectedOrder, resetOrder } = orderSlice.actions;
 export default orderSlice.reducer;

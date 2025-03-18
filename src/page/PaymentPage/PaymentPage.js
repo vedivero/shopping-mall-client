@@ -35,7 +35,7 @@ const PaymentPage = () => {
       if (firstLoading) {
          setFirstLoading(false);
       } else {
-         if (orderNum !== '') {
+         if (orderNum && orderNum !== '') {
             navigate(`/payment/success`);
          }
       }
