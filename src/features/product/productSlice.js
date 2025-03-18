@@ -98,6 +98,7 @@ export const editProduct = createAsyncThunk(
 const productSlice = createSlice({
    name: 'products',
    initialState: {
+      userProductList: [],
       productList: [],
       selectedProduct: null,
       loading: false,
