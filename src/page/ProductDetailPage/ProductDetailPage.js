@@ -8,6 +8,7 @@ import './style/productDetail.style.css';
 import { getProductDetail } from '../../features/product/productSlice';
 import { addToCart } from '../../features/cart/cartSlice';
 import { showToastMessage } from '../../features/common/uiSlice';
+import Spinner from '../../common/component/Spinner';
 
 const ProductDetail = () => {
    const dispatch = useDispatch();
@@ -48,19 +49,7 @@ const ProductDetail = () => {
       dispatch(getProductDetail(id));
    }, [id, dispatch]);
 
-   if (loading || !selectedProduct)
-      return (
-         <ColorRing
-            visible={true}
-            height='80'
-            width='80'
-            ariaLabel='blocks-loading'
-            wrapperStyle={{}}
-            wrapperClass='blocks-wrapper'
-            colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
-            style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}
-         />
-      );
+   if (loading || !selectedProduct) return <Spinner />;
    return (
       <Container className='product-detail-card'>
          <Row>
