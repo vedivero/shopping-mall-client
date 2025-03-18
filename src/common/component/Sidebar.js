@@ -25,6 +25,9 @@ const Sidebar = () => {
                <li className='sidebar-item' onClick={() => handleSelectMenu('/admin/order?page=1')}>
                   주문 관리
                </li>
+               <li className='sidebar-item' onClick={() => handleSelectMenu('/admin/product/stats')}>
+                  상품 통계
+               </li>
             </ul>
          </div>
       );
