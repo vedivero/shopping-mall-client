@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactPaginate from 'react-paginate';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ const AdminOrderPage = () => {
    const navigate = useNavigate();
    const [query] = useSearchParams();
    const dispatch = useDispatch();
-   const { adminOrderList, totalPageNum } = useSelector((state) => state.order);
+   const { loading, adminOrderList, totalPageNum } = useSelector((state) => state.order);
    const [searchQuery, setSearchQuery] = useState({
       page: query.get('page') || 1,
       orderNum: query.get('ordernum') || '',
@@ -48,6 +48,10 @@ const AdminOrderPage = () => {
    const handleClose = () => {
       setOpen(false);
    };
+
+   if (loading) {
+      return <Spinner />;
+   }
 
    return (
       <div className='locate-center'>

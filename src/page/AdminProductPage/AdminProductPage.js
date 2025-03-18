@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
@@ -12,8 +12,7 @@ const AdminProductPage = () => {
    const navigate = useNavigate();
    const [query] = useSearchParams();
    const dispatch = useDispatch();
-   const productList = useSelector((state) => state.product.adminProductList) || [];
-   const success = useSelector((state) => state.product.success);
+   const { loading, adminProductList = [], totalPageNum, success } = useSelector((state) => state.product);
    const [showDialog, setShowDialog] = useState(false);
    const [searchQuery, setSearchQuery] = useState({
       page: query.get('page') || 1,
@@ -21,17 +20,6 @@ const AdminProductPage = () => {
    });
 
    const [mode, setMode] = useState('new');
-   const totalPageNum = useSelector((state) => state.product.totalPageNum);
-   const tableHeader = [
-      '#',
-      '상품 관리번호',
-      '상품명',
-      '상품가격',
-      '재고 수량',
-      '상품 이미지',
-      '상품 상태(게시, 숨김)',
-      '상품 관리',
-   ];
 
    useEffect(() => {
       dispatch(getAdminProductList({ ...searchQuery }));
@@ -72,6 +60,10 @@ const AdminProductPage = () => {
       setSearchQuery({ ...searchQuery, page: selected + 1 });
    };
 
+   if (loading) {
+      return <Spinner />;
+   }
+
    return (
       <div className='locate-center'>
          <Container>
@@ -87,8 +79,17 @@ const AdminProductPage = () => {
                새 상품 등록 +
             </Button>
             <ProductTable
-               header={tableHeader}
-               data={productList}
+               header={[
+                  '#',
+                  '상품 관리번호',
+                  '상품명',
+                  '상품가격',
+                  '재고 수량',
+                  '상품 이미지',
+                  '상품 상태(게시, 숨김)',
+                  '상품 관리',
+               ]}
+               data={adminProductList}
                deleteItem={deleteItem}
                openEditForm={openEditForm}
             />
