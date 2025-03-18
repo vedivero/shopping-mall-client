@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Container, Row, Col, Button, Dropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { ColorRing } from 'react-loader-spinner';
@@ -16,6 +16,17 @@ const ProductDetail = () => {
    const { id } = useParams();
    const [sizeError, setSizeError] = useState(false);
    const { user } = useSelector((state) => state.user) || {};
+
+   const navigate = useNavigate();
+   const [query] = useSearchParams();
+   const category = query.get('category');
+
+   useEffect(() => {
+      if (category) {
+         navigate(`/?category=${category}`, { replace: true });
+         setTimeout(() => navigate(`/?category=${category}`), 0);
+      }
+   }, [category, navigate]);
 
    const addItemToCart = () => {
       if (!size) {
@@ -47,6 +58,7 @@ const ProductDetail = () => {
             wrapperStyle={{}}
             wrapperClass='blocks-wrapper'
             colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+            style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}
          />
       );
    return (
