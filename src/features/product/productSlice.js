@@ -94,12 +94,27 @@ export const editProduct = createAsyncThunk(
    },
 );
 
+export const getAdminProductListForStats = createAsyncThunk(
+   'products/getAdminProductListForStats',
+   async (_, { rejectWithValue }) => {
+      try {
+         const response = await api.get('/product/admin/stats');
+         console.log(response);
+         return response.data.data;
+      } catch (error) {
+         console.error(error.message);
+         return rejectWithValue(error.error);
+      }
+   },
+);
+
 // 슬라이스 생성
 const productSlice = createSlice({
    name: 'products',
    initialState: {
       userProductList: [],
       productList: [],
+      productListForStats: [],
       selectedProduct: null,
       loading: false,
       error: '',
@@ -192,6 +207,18 @@ const productSlice = createSlice({
             state.error = '';
          })
          .addCase(getProductDetail.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+         })
+         .addCase(getAdminProductListForStats.pending, (state) => {
+            state.loading = true;
+         })
+         .addCase(getAdminProductListForStats.fulfilled, (state, action) => {
+            state.loading = false;
+            state.productListForStats = action.payload;
+            state.error = '';
+         })
+         .addCase(getAdminProductListForStats.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
          });
