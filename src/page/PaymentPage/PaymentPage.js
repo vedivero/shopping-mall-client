@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import OrderReceipt from './component/OrderReceipt';
@@ -43,11 +43,11 @@ const PaymentPage = () => {
 
    const handleSubmit = (event) => {
       event.preventDefault();
-      const { name, contact, address, city, zip } = shipInfo;
+      const { name, contact, address, detailAddress } = shipInfo;
       dispatch(
          createOrder({
             totalPrice,
-            shipTo: { address, city, zip },
+            shipTo: { address, detailAddress },
             contact: { name, contact },
             orderList: cartList.map((item) => {
                return {
@@ -79,6 +79,23 @@ const PaymentPage = () => {
    const handleInputFocus = (e) => {
       setCardValue({ ...cardValue, focus: e.target.name });
    };
+
+   const handleAddressSearch = () => {
+      new window.daum.Postcode({
+         oncomplete: (data) => {
+            let fullAddress = data.address;
+            let extraAddress = '';
+            if (data.addressType === 'R') {
+               if (data.bname !== '') extraAddress += data.bname;
+               if (data.buildingName !== '')
+                  extraAddress += extraAddress ? `, ${data.buildingName}` : data.buildingName;
+               fullAddress += extraAddress ? ` (${extraAddress})` : '';
+            }
+            setShipInfo({ ...shipInfo, address: fullAddress });
+         },
+      }).open();
+   };
+
    if (cartList?.length === 0) {
       navigate('/cart');
    }
@@ -91,26 +108,6 @@ const PaymentPage = () => {
                   <div>
                      <Form onSubmit={handleSubmit}>
                         <Row className='mb-3'>
-                           {/* <Form.Group as={Col} controlId='lastName'>
-                              <Form.Label>성</Form.Label>
-                              <Form.Control
-                                 type='text'
-                                 onChange={handleFormChange}
-                                 required
-                                 name='lastName'
-                              />
-                           </Form.Group>
-
-                           <Form.Group as={Col} controlId='firstName'>
-                              <Form.Label>이름</Form.Label>
-                              <Form.Control
-                                 type='text'
-                                 onChange={handleFormChange}
-                                 required
-                                 name='firstName'
-                              />
-                           </Form.Group> */}
-
                            <Form.Group className='mb-3' controlId='name'>
                               <Form.Label>이름</Form.Label>
                               <Form.Control type='text' onChange={handleFormChange} required name='name' />
@@ -127,17 +124,38 @@ const PaymentPage = () => {
                            />
                         </Form.Group>
 
-                        <Form.Group className='mb-3' controlId='formGridAddress2'>
+                        {/* 주소 검색 */}
+                        <Form.Group className='mb-3'>
                            <Form.Label>주소</Form.Label>
+                           <InputGroup>
+                              <Form.Control
+                                 type='text'
+                                 placeholder=''
+                                 value={shipInfo.address}
+                                 name='address'
+                                 readOnly
+                                 required
+                              />
+                              <Button variant='dark' onClick={handleAddressSearch}>
+                                 주소 검색
+                              </Button>
+                           </InputGroup>
+                        </Form.Group>
+
+                        {/* 상세 주소 입력 */}
+                        <Form.Group className='mb-3'>
+                           <Form.Label>상세 주소</Form.Label>
                            <Form.Control
-                              placeholder='Apartment, studio, or floor'
+                              type='text'
+                              placeholder='상세 주소를 입력하세요'
+                              value={shipInfo.detailAddress}
                               onChange={handleFormChange}
                               required
-                              name='address'
+                              name='detailAddress'
                            />
                         </Form.Group>
 
-                        <Row className='mb-3'>
+                        {/* <Row className='mb-3'>
                            <Form.Group as={Col} controlId='formGridCity'>
                               <Form.Label>City</Form.Label>
                               <Form.Control onChange={handleFormChange} required name='city' />
@@ -147,7 +165,8 @@ const PaymentPage = () => {
                               <Form.Label>Zip</Form.Label>
                               <Form.Control onChange={handleFormChange} required name='zip' />
                            </Form.Group>
-                        </Row>
+                        </Row> */}
+
                         <div className='mobile-receipt-area'>
                            {cartList?.length === 0 && (
                               <OrderReceipt cartList={cartList} totalPrice={totalPrice} />
