@@ -57,7 +57,12 @@ export const registerUser = createAsyncThunk(
    async ({ email, name, password, navigate }, { dispatch, rejectWithValue }) => {
       try {
          const response = await api.post('/user/regist', { email, name, password });
-         dispatch(showToastMessage({ message: '회원 가입이 완료되었습니다.', status: 'success' }));
+         dispatch(
+            showToastMessage({
+               message: ['회원 가입이 완료되었습니다.', '이메일을 인증 후 로그인해 주세요.'],
+               status: 'success',
+            }),
+         );
          navigate('/login');
          return response.data.data;
       } catch (error) {
