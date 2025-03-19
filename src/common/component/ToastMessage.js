@@ -1,19 +1,34 @@
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ToastMessage = () => {
    const { toastMessage } = useSelector((state) => state.ui);
+
    useEffect(() => {
       if (toastMessage) {
          const { message, status } = toastMessage;
          if (message !== '' && status !== '') {
-            toast[status](message, { theme: 'colored' });
+            // 배열이면 여러 줄로 출력
+            if (Array.isArray(message)) {
+               toast[status](
+                  <div>
+                     {message.map((line, index) => (
+                        <p key={index} style={{ margin: 0 }}>
+                           {line}
+                        </p>
+                     ))}
+                  </div>,
+                  { theme: 'colored' },
+               );
+            } else {
+               toast[status](message, { theme: 'colored' });
+            }
          }
       }
    }, [toastMessage]);
+
    return (
       <ToastContainer
          position='top-center'
@@ -26,7 +41,7 @@ const ToastMessage = () => {
          draggable
          pauseOnHover
          theme='light'
-         style={{ whiteSpace: 'nowrap', maxWidth: '80vw' }}
+         style={{ maxWidth: '90vw', width: '350px' }}
       />
    );
 };
