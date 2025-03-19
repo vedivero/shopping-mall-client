@@ -11,14 +11,19 @@ export const loginWithEmail = createAsyncThunk(
          sessionStorage.setItem('token', response.data.token);
          return response.data;
       } catch (error) {
-         console.error('이메일 로그인 실패 : ', error.message);
+         let errorMessage = '로그인 정보가 일치하지 않습니다.';
+         if (error.status === 401) {
+            errorMessage = '이메일 인증 후 로그인해 주세요.';
+         }
+
          dispatch(
             showToastMessage({
-               message: '로그인 정보가 일치하지 않습니다.',
+               message: errorMessage,
                status: 'error',
             }),
          );
-         return rejectWithValue(error.error);
+
+         return rejectWithValue(errorMessage);
       }
    },
 );
@@ -37,7 +42,7 @@ export const loginWithGoogle = createAsyncThunk(
    },
 );
 
-export const logout = createAsyncThunk('user/logout', async (_, { dispatch }) => {
+export const logout = createAsyncThunk('/user/logout', async (_, { dispatch }) => {
    sessionStorage.removeItem('token');
    dispatch(initialCart());
    dispatch(
@@ -63,7 +68,7 @@ export const registerUser = createAsyncThunk(
    },
 );
 
-export const loginWithToken = createAsyncThunk('user/loginWithToken', async (_, { rejectWithValue }) => {
+export const loginWithToken = createAsyncThunk('/user/loginWithToken', async (_, { rejectWithValue }) => {
    try {
       const response = await api.get('/user/me');
       return response.data;
@@ -71,6 +76,18 @@ export const loginWithToken = createAsyncThunk('user/loginWithToken', async (_, 
       return rejectWithValue(error.error);
    }
 });
+
+export const checkEmailExists = createAsyncThunk(
+   'user/checkEmailExists',
+   async (email, { rejectWithValue }) => {
+      try {
+         const response = await api.post('/user/check-email', { email });
+         return response.data;
+      } catch (error) {
+         return rejectWithValue(error.response.data);
+      }
+   },
+);
 
 const userSlice = createSlice({
    name: 'user',
@@ -80,13 +97,19 @@ const userSlice = createSlice({
       loginError: null,
       registrationError: null,
       success: false,
+      emailExists: null,
+      checkingEmail: false,
    },
    reducers: {
       clearErrors: (state) => {
          state.loginError = null;
          state.registrationError = null;
+         state.emailExists = null;
       },
       logout,
+      setEmailVerified: (state, action) => {
+         state.emailVerified = action.payload;
+      },
    },
    extraReducers: (builder) => {
       builder
@@ -135,8 +158,20 @@ const userSlice = createSlice({
          .addCase(loginWithGoogle.rejected, (state, action) => {
             state.loading = false;
             state.loginError = action.payload;
+         })
+         .addCase(checkEmailExists.pending, (state) => {
+            state.checkingEmail = true;
+            state.emailExists = null;
+         })
+         .addCase(checkEmailExists.fulfilled, (state, action) => {
+            state.checkingEmail = false;
+            state.emailExists = action.payload.exists;
+         })
+         .addCase(checkEmailExists.rejected, (state) => {
+            state.checkingEmail = false;
+            state.emailExists = null;
          });
    },
 });
-export const { clearErrors } = userSlice.actions;
+export const { clearErrors, setEmailVerified } = userSlice.actions;
 export default userSlice.reducer;
